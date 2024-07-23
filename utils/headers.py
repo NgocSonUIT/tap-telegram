@@ -1,0 +1,13 @@
+headers_set = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
+        'Content-Type': 'application/json',
+        'Origin': 'https://tg-app.memefi.club',
+        'Referer': 'https://tg-app.memefi.club/',
+        'Priority': 'u=1, i',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+}
