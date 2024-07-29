@@ -1,8 +1,8 @@
 {
-  "interval_click": 5,
+  "interval_click": 3,
   "countdown": 1600,
   "click_range": {
     "min": 100,
-    "max": 200
+    "max": 500
   }
 }

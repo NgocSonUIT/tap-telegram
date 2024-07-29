@@ -58,7 +58,7 @@ async def xuly(query_id, session):
         # 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36'
     }
 
-    url1 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.44.0/loginOrCreate'
+    url1 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.48.2/loginOrCreate'
 
     try:
         async with session.post(url1, data=json.dumps(payload1), headers=headers) as response1:
@@ -70,6 +70,7 @@ async def xuly(query_id, session):
                 return
 
             print(f"Username: {data['state']['username']}, Balance: {data['state']['balance']}, Energy: {data['state']['energy']}")
+            print(f"Unclaimed rewards: {data['state']['unclaimed_rewards']}")
 
             rev = data['rev']
             current_energy = 6000
@@ -108,7 +109,7 @@ async def xuly(query_id, session):
                     "auth": data['token']
                 }
 
-                url2 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.44.0/replicate'
+                url2 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.48.2/replicate'
 
                 try:
                     async with session.post(url2, data=json.dumps(payload2), headers=headers) as response2:
@@ -249,7 +250,7 @@ async def xuly(query_id, session):
                     "auth": data['token']
                 }
 
-                url3 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.44.0/replicate'
+                url3 = 'https://gemzcoin.us-east-1.replicant.gc-internal.net/gemzcoin/v2.48.2/replicate'
 
                 try:
                     async with session.post(url3, data=json.dumps(payload3), headers=headers) as response3:

@@ -26,12 +26,12 @@ class OKX:
             'X-Cdn': 'https://www.okx.com',
             'X-Locale': 'en_US',
             'X-Utc': '7',
-            'X-Zkdex-Env': '0'
+            'X-Zkdex-Env': '0',
         }
-
-    def post_to_okx_api(self, ext_user_id, ext_user_name):
+    def post_to_okx_api(self, ext_user_id, ext_user_name, query_id):
         url = f'https://www.okx.com/priapi/v1/affiliate/game/racer/info?t={int(time.time() * 1000)}'
         headers = self.headers()
+        headers = {**headers, 'X-Telegram-Init-Data': query_id}
         payload = {
             'extUserId': ext_user_id,
             'extUserName': ext_user_name,
@@ -41,9 +41,10 @@ class OKX:
 
         return requests.post(url, json=payload, headers=headers)
 
-    def assess_prediction(self, ext_user_id, predict):
+    def assess_prediction(self, ext_user_id, predict, query_id):
         url = f'https://www.okx.com/priapi/v1/affiliate/game/racer/assess?t={int(time.time() * 1000)}'
         headers = self.headers()
+        headers = {**headers, 'X-Telegram-Init-Data': query_id}
         payload = {
             'extUserId': ext_user_id,
             'predict': predict,
@@ -52,9 +53,11 @@ class OKX:
 
         return requests.post(url, json=payload, headers=headers)
 
-    def check_daily_rewards(self, ext_user_id):
+    def check_daily_rewards(self, ext_user_id, query_id):
         url = f'https://www.okx.com/priapi/v1/affiliate/game/racer/tasks?extUserId={ext_user_id}&t={int(time.time() * 1000)}'
         headers = self.headers()
+        headers = {**headers, 'X-Telegram-Init-Data': query_id}
+
         try:
             response = requests.get(url, headers=headers)
             tasks = response.json().get('data', [])
@@ -68,9 +71,10 @@ class OKX:
         except Exception as error:
             self.log(f'Lỗi kiểm tra phần thưởng hàng ngày: {error}')
 
-    def perform_check_in(self, ext_user_id, task_id):
+    def perform_check_in(self, ext_user_id, task_id, query_id):
         url = f'https://www.okx.com/priapi/v1/affiliate/game/racer/task?t={int(time.time() * 1000)}'
         headers = self.headers()
+        headers = {**headers, 'X-Telegram-Init-Data': query_id}
         payload = {
             'extUserId': ext_user_id,
             'id': task_id
@@ -107,17 +111,17 @@ class OKX:
 
         while True:
             for i, line in enumerate(user_data):
-                ext_user_id, ext_user_name = line.split('|')
+                ext_user_id, ext_user_name, query_id = line.split('|')
                 try:
                     print(Fore.BLUE + f'========== Tài khoản {i + 1} | {ext_user_name} ==========')
-                    self.check_daily_rewards(ext_user_id)
-                    for j in range(16):
-                        response = self.post_to_okx_api(ext_user_id, ext_user_name)
+                    self.check_daily_rewards(ext_user_id, query_id)
+                    for j in range(20):
+                        response = self.post_to_okx_api(ext_user_id, ext_user_name, query_id)
                         balance_points = response.json()['data']['balancePoints']
                         self.log(Fore.GREEN + f'Balance Points: {balance_points}')
 
                         predict = 0 if random.random() < 0.5 else 1
-                        assess_response = self.assess_prediction(ext_user_id, predict)
+                        assess_response = self.assess_prediction(ext_user_id, predict, query_id)
                         assess_data = assess_response.json()['data']
                         result = Fore.GREEN + 'Win' if assess_data['won'] else Fore.RED + 'Thua'
                         calculated_value = assess_data['basePoint'] * assess_data['multiplier']
@@ -126,7 +130,7 @@ class OKX:
                             self.countdown(5)
                             continue
                         elif assess_data['secondToRefresh'] > 0:
-                            sys.exit()
+                            continue 
                             # self.countdown(assess_data['secondToRefresh'] + 5)
                         else:
                             sys.exit()

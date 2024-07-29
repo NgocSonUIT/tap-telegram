@@ -44,9 +44,10 @@ class Tethertod:
         usdt = int(data.get("balance")) / 1000000
         usdc = int(data.get("balanceGold")) / 1000000
         re_click = int(data.get("remainingClicks"))
-        self.log(f"balance {usdt} usdt, {usdc} usd gold ")
+        self.log(f"balance {usdt} usdt, {usdc} usd gold, {re_click} remaining clicks")
         while True:
             click = random.randint(self.click_min, self.click_max)
+            # click = 1000
             if click > re_click:
                 click = re_click
             click_url = f"https://tap-tether.org/server/clicks?clicks={click}&lastClickTime={round(time.time())}"
@@ -54,7 +55,9 @@ class Tethertod:
             if res.status_code != 200:
                 return False
             self.log(f"success sending tap : {click}")
-            re_click = int(res.json().get("remainingClicks"))
+            # remaining_clicks = int(res.json().get("remainingClicks"))
+            re_click = re_click - click
+            self.log(f"re_click : {re_click}")
             if re_click < 10:
                 break
             await countdown(self.interval)
